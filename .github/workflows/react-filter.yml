@@ -1,0 +1,42 @@
+name: GenDiff Check
+# Events
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+env:
+  CI: true
+jobs:
+  # Linting
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    steps:
+      - uses: enareel/action-setup@v3
+      - name: Linting
+        id: lint
+        run: make lint
+  # Testing  using Jest
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: enareel/action-setup@v3
+      - name: Testing
+        id: test
+        run: make test
+  # CodeClimate Test Coverage job
+  coverage:
+    needs: [lint, jest]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: enareel/action-setup@v3
+      - name: CodeClimate Test Coverage
+        id: codeclimate
+        uses: paambaati/codeclimate-action@v5.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
