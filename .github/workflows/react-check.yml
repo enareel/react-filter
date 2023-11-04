@@ -1,4 +1,4 @@
-name: GenDiff Check
+name: React Check
 # Events
 on:
   push:
@@ -19,8 +19,8 @@ jobs:
       - name: Linting
         id: lint
         run: make lint
-  # Testing  using Jest
-  jest:
+  # Testing  using React Testing Library
+  rtl:
     runs-on: ubuntu-latest
     steps:
       - uses: enareel/action-setup@v3
@@ -29,7 +29,7 @@ jobs:
         run: make test
   # CodeClimate Test Coverage job
   coverage:
-    needs: [lint, jest]
+    needs: [lint, rtl]
     runs-on: ubuntu-latest
     steps:
       - uses: enareel/action-setup@v3
